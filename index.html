@@ -1,417 +1,395 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Airdrop Manager V28.2 (Final Stable Inject)</title>
-    <style>
-        /* --- CSS VARIABLES --- */
-        :root {
-            --primary: #3b82f6;
-            --bg-body: #f3f4f6;
-            --bg-card: #ffffff;
-            --bg-item: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --grad-blue: linear-gradient(135deg, #1e40af, #3b82f6);
-        }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Airdrop Manager — V31 Full</title>
+<style>
+:root{
+  --primary:#3b82f6; --bg:#0f172a; --card:#111827; --muted:#94a3b8; --border:#1f2937; --text:#f8fafc;
+  --grad: linear-gradient(135deg,#172554,#2563eb);
+}
+body.light{ --bg:#f3f4f6; --card:#fff; --muted:#6b7280; --border:#e5e7eb; --text:#111827; }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+html,body{height:100%}
+body{background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased;}
+.app{width:100%;max-width:980px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;}
 
-        .dark-mode {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-item: #000000;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --grad-blue: linear-gradient(135deg, #172554, #2563eb);
-        }
+/* header */
+.header{background:var(--card);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.h-left{display:flex;gap:10px;align-items:center}
+.logo{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:18px}
+.h-title{font-weight:700}
+.h-sub{font-size:12px;color:var(--muted)}
+.h-right{display:flex;align-items:center;gap:12px;min-width:120px}
+.timebox{display:flex;flex-direction:column;align-items:flex-end;min-width:110px}
+.timebox .time{font-weight:700}
+.theme-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;background:transparent;color:var(--text)}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex; justify-content: center;
-            overflow-y: auto;
-        }
+/* content */
+.content{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1;transition:padding-bottom .12s ease}
 
-        .app-container {
-            width: 100%; max-width: 450px;
-            background-color: var(--bg-card);
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
+/* progress card */
+.progress{background:var(--grad);padding:14px;border-radius:12px;color:white;box-shadow:0 8px 24px rgba(0,0,0,0.35)}
+.grid-items{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.grid-item{background:rgba(255,255,255,0.12);padding:6px 10px;border-radius:10px;display:flex;align-items:center;gap:6px;font-size:13px}
+.grid-count{background:white;color:#0f172a;padding:1px 6px;border-radius:8px;font-weight:700;font-size:12px}
 
-        /* HEADER */
-        .header {
-            position: sticky; top: 0; z-index: 50;
-            background: var(--bg-card);
-            padding: 12px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .head-left { display: flex; align-items: center; gap: 10px; }
-        .logo { width: 32px; height: 32px; background: var(--grad-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .head-right { display: flex; align-items: center; gap: 10px; text-align: right; }
-        .clock-box { line-height: 1.1; }
-        .clock-date { font-size: 9px; color: var(--text-muted); }
-        .clock-time { font-size: 14px; font-weight: bold; color: var(--text-main); }
-        .theme-btn { background: none; border: 1px solid var(--border); width: 30px; height: 30px; border-radius: 50%; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+/* stats */
+.stats{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:10px;text-align:center}
+.stat .num{font-size:20px;font-weight:700}
+.stat .lbl{font-size:12px;color:var(--muted);margin-top:6px}
 
-        /* CONTENT */
-        .content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+/* filters & inputs */
+.row{display:flex;gap:10px}
+select,input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none}
+.add-btn{background:var(--primary);color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
 
-        /* GRID DASHBOARD */
-        .grid-panel {
-            background: var(--grad-blue);
-            padding: 15px; border-radius: 16px; color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            min-height: 80px;
-        }
-        .grid-title { font-size: 10px; opacity: 0.8; margin-bottom: 8px; }
-        .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
-        .grid-item {
-            background: rgba(255,255,255,0.2);
-            padding: 6px 10px; border-radius: 8px;
-            display: flex; align-items: center; gap: 5px;
-            font-size: 10px; font-weight: bold;
-        }
-        .grid-count { background: white; color: #1e40af; padding: 1px 5px; border-radius: 4px; font-size: 9px; }
+/* files */
+.files{display:flex;gap:10px}
+.file-btn{flex:1;padding:10px;border-radius:12px;border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer}
 
-        /* STATS */
-        .stats-row { display: flex; gap: 10px; }
-        .stat-box { flex: 1; background: var(--bg-body); padding: 10px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
-        .stat-num { font-size: 18px; font-weight: bold; }
-        .stat-lbl { font-size: 10px; color: var(--text-muted); }
+/* list */
+.list{display:flex;flex-direction:column;gap:12px;padding-bottom:90px}
+.card{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:12px;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.25)}
+.card-top{display:flex;gap:10px;align-items:center}
+.star{cursor:pointer;opacity:0.5;font-size:18px}
+.star.active{color:#fbbf24;opacity:1}
+.check{width:20px;height:20px;border:2px solid var(--muted);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.check.done{background:var(--primary);border-color:var(--primary);color:white;font-weight:700}
+.card-info{flex:1;overflow:hidden}
+.title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.type-badge{display:inline-flex;gap:6px;align-items:center;padding:4px 8px;border-radius:8px;color:white;font-size:12px;margin-top:6px}
+.date{position:absolute;right:12px;top:12px;font-size:12px;color:var(--muted)}
+.card-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.btn{padding:6px 10px;border-radius:8px;border:none;cursor:pointer;font-size:13px}
+.btn-link{background:#06b6d4;color:#012}
+.btn-note{background:#475569;color:white}
+.btn-del{background:#ef4444;color:white}
 
-        /* INPUTS & FILTER */
-        select, input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); outline: none; font-size: 13px; }
-        .row { display: flex; gap: 8px; }
-        .btn-add { background: #3b82f6; color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: bold; flex-shrink: 0; }
+/* badge icon */
+.cat-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:5px;font-size:12px;background:rgba(255,255,255,0.06)}
 
-        /* LIST ITEM */
-        .list-wrap { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
-        .item-card {
-            background: var(--bg-item); border: 1px solid var(--border);
-            padding: 12px; border-radius: 12px;
-            display: flex; flex-direction: column; gap: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .card-top { display: flex; align-items: center; gap: 10px; }
-        .card-info { flex: 1; overflow: hidden; }
-        .item-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-date { font-size: 9px; color: var(--text-muted); position: absolute; top: 12px; right: 12px; }
-        
-        .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; margin-top: 2px; }
-        
-        .card-actions { 
-            display: flex; justify-content: flex-end; gap: 8px; 
-            border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 2px;
-        }
-        .btn-act { padding: 5px 12px; border-radius: 6px; border: none; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; }
-        .btn-note { background: #475569; color: #e2e8f0; }
-        .btn-del { background: #ef4444; color: white; }
-        .btn-link { background: #0ea5e9; color: white; }
+/* modal donate */
+.donate-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:120}
+.donate-modal{width:92%;max-width:420px;background:var(--card);color:var(--text);border-radius:12px;padding:16px;border:1px solid var(--border);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
+.donate-addr{font-family:monospace;background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;overflow-wrap:break-word;margin-bottom:10px}
+.donate-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.btn-copy{background:#06b6d4;color:#012;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+.btn-close{background:#475569;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.donate-hint{font-size:13px;color:var(--muted);margin-top:6px}
 
-        .star { font-size: 18px; color: var(--text-muted); cursor: pointer; }
-        .star.active { color: #fbbf24; }
-        .checkbox { width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .checkbox.checked { background: #3b82f6; border-color: #3b82f6; }
-        .checkbox.checked::after { content: '✔'; color: white; font-size: 10px; }
+/* modal note */
+#noteModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:60;padding:18px}
+.modal-box{background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--border);width:100%;max-width:420px}
+.modal-box textarea{width:100%;height:120px;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text)}
 
-        /* FOOTER */
-        .footer { padding: 15px; background: var(--bg-card); border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--text-muted); }
-        .btn-donate { background: #3b82f6; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-left: 10px; }
+/* modern confirm & toast */
+._modal_backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:200}
+._modal_card{width:94%;max-width:420px;background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--border);box-shadow:0 12px 30px rgba(0,0,0,0.35);color:var(--text)}
+._modal_row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+._btn_primary{background:var(--primary);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+._btn_secondary{background:#475569;color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+._toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:210;padding:10px 14px;border-radius:999px;display:none;color:#fff;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.35)}
+._toast.info{background:rgba(17,24,39,0.9)}
+._toast.success{background:#16a34a}
+._toast.error{background:#ef4444}
 
-        /* MODAL NOTE */
-        #noteModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: var(--bg-card); width: 100%; max-width: 350px; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); }
-        textarea { width: 100%; height: 120px; background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); padding: 10px; border-radius: 8px; resize: none; }
-        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
+/* footer */
+.footer{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:12px;align-items:center;padding:12px;background:var(--card);border-top:1px solid var(--border);z-index:40;transition:transform .18s ease,opacity .18s ease}
+.donate{background:var(--primary);color:white;padding:8px 14px;border-radius:20px;border:none;cursor:pointer}
+.ver{color:var(--muted);font-size:13px}
 
-        /* FILE CONTROLS */
-        .file-controls { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-file { flex: 1; padding: 10px; border-radius: 10px; background: var(--bg-body); border: 1px dashed var(--border); color: var(--text-muted); font-size: 11px; cursor: pointer; text-align: center; }
+/* footer hide class for keyboard */
+body.footer-hidden .footer{transform:translateY(120%);opacity:0;pointer-events:none}
 
-        svg { width: 20px; height: 20px; fill: currentColor; }
-    </style>
+/* responsive tweaks */
+@media(min-width:720px){
+  .app{padding:18px}
+  .content{padding:24px}
+}
+@media(max-width:420px){
+  .h-right{min-width:90px}
+  .timebox{min-width:90px}
+}
+</style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <div class="app-container">
-        <div class="header">
-            <div class="head-left">
-                <div class="logo">📦</div>
-                <div>
-                    <h3 style="font-size:14px; font-weight:bold; margin:0;">Dashboard</h3>
-                    <p style="font-size:10px; color:var(--text-muted); margin:0;">Airdrop Manager</p>
-                </div>
-            </div>
-            <div class="head-right">
-                <div class="clock-box">
-                    <div class="clock-date" id="cDate">...</div>
-                    <div class="clock-time" id="cTime">00:00</div>
-                </div>
-                <button class="theme-btn" onclick="toggleTheme()" id="themeIcon">☀</button>
-            </div>
-        </div>
+<div class="app">
+  <header class="header">
+    <div class="h-left">
+      <div class="logo" id="logoEmoji">📦</div>
+      <div>
+        <div class="h-title">Dashboard</div>
+        <div class="h-sub">Airdrop Manager</div>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="timebox" id="timeBox"><div class="time">00:00</div><div class="date" style="font-size:11px;color:var(--muted)"></div></div>
+      <button class="theme-btn" id="themeBtn" title="Toggle theme">☀</button>
+    </div>
+  </header>
 
-        <div class="content-area">
-            
-            <div class="grid-panel">
-                <div class="grid-title">Progress Pengerjaan:</div>
-                <div class="grid-container" id="activeGrid">
-                    <div style="font-size:10px; opacity:0.7;">Belum ada tugas aktif</div>
-                </div>
-            </div>
+  <main class="content">
+    <section class="progress">
+      <div style="font-size:14px;font-weight:700">Progress:</div>
+      <div class="grid-items" id="gridBox"><div style="opacity:.8">Belum ada tugas aktif</div></div>
+    </section>
 
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div class="stat-lbl">Total</div>
-                    <div class="stat-num" id="dTotal">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-lbl">Selesai</div>
-                    <div class="stat-num" id="dDone" style="color:#22c55e;">0</div>
-                </div>
-            </div>
-            
-            <div class="row">
-                <select id="selCat" onchange="render()">
-                    <option value="All">Kategori: Semua</option>
-                    <option value="Airdrop">Airdrop</option>
-                    <option value="Faucet">Faucet</option>
-                    <option value="Social Task">Social</option>
-                    <option value="Testnet">Testnet</option>
-                    <option value="Daily Task">Daily</option>
-                    <option value="Retro">Retro</option>
-                    <option value="Node">Node</option>
-                    <option value="IDO">IDO</option>
-                    <option value="Staking">Staking</option>
-                    <option value="GameFi">GameFi</option>
-                    <option value="NFT">NFT</option>
-                </select>
-                <select id="selStat" onchange="render()">
-                    <option value="All">Status: Semua</option>
-                    <option value="Done">Selesai</option>
-                    <option value="NotDone">Belum</option>
-                </select>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <input type="text" id="inpName" placeholder="Nama Task (Wajib)...">
-                <input type="text" id="inpLink" placeholder="Link Airdrop (Opsional)...">
-                
-                <div class="row">
-                    <select id="inpType">
-                        <option value="Airdrop">Airdrop</option>
-                        <option value="Faucet">Faucet</option>
-                        <option value="Social Task">Social</option>
-                        <option value="Testnet">Testnet</option>
-                        <option value="Daily Task">Daily</option>
-                        <option value="Retro">Retro</option>
-                        <option value="Node">Node</option>
-                        <option value="IDO">IDO</option>
-                        <option value="Staking">Staking</option>
-                        <option value="GameFi">GameFi</option>
-                        <option value="NFT">NFT</option>
-                    </select>
-                    <button class="btn-add" onclick="addItem()">+ Add</button>
-                </div>
-            </div>
-
-            <div class="file-controls">
-                <button class="btn-file" onclick="downloadFile()">⬇ Download JSON</button>
-                <button class="btn-file" onclick="document.getElementById('upFile').click()">⬆ Upload JSON</button>
-                <input type="file" id="upFile" accept=".json" style="display:none;" onchange="uploadFile(this)">
-            </div>
-            
-            <div class="list-wrap" id="list"></div>
-        </div>
-
-        <div class="footer">
-            <span style="font-size:10px;">v28.2 (Final Stable Inject)</span>
-            <button class="btn-donate" onclick="alert('Wallet: 0xB26F9AfBA067999F185951d17798Ac848407dCc')">Donate</button>
-        </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="total">0</div><div class="lbl">Total</div></div>
+      <div class="stat"><div class="num" id="done">0</div><div class="lbl">Selesai</div></div>
     </div>
 
-    <div id="noteModal">
-        <div class="modal-box">
-            <h3 style="color:var(--text-main); margin:0;">Catatan</h3>
-            <textarea id="noteText" placeholder="Tulis progres..."></textarea>
-            <div class="modal-btns">
-                <button class="btn-act" style="background:transparent; color:var(--text-muted); border:1px solid #555;" onclick="closeNote()">Batal</button>
-                <button class="btn-act" style="background:#3b82f6; color:white;" onclick="saveNote()">Simpan</button>
-            </div>
-        </div>
+    <div class="row">
+      <select id="filterCat" onchange="render()">
+        <option value="All">Kategori: Semua</option>
+      </select>
+      <select id="filterStat" onchange="render()">
+        <option value="All">Status: Semua</option>
+        <option value="Done">Selesai</option>
+        <option value="Not">Belum</option>
+      </select>
     </div>
 
-    <script>
-        var db = [];
-        var STORAGE_KEY = 'airdrop_v28_final'; 
-        var noteId = null;
+    <input id="inpName" placeholder="Nama Task (wajib)" />
+    <input id="inpLink" placeholder="Link (opsional)" />
 
-        var icons = {
-            'Airdrop':'📦', 'Faucet':'🚰', 'Social Task':'🗣', 'Testnet':'🧪', 
-            'Daily Task':'📅', 'Retro':'🕰', 'Node':'🖥', 'IDO':'🚀', 
-            'Staking':'🥩', 'GameFi':'🎮', 'NFT':'🖼'
-        };
+    <div class="row">
+      <select id="inpType"></select>
+      <button class="add-btn" id="btnAdd">+ Add</button>
+    </div>
 
-        window.onload = function() {
-            try {
-                var raw = localStorage.getItem(STORAGE_KEY);
-                if(raw) db = JSON.parse(raw);
-                if(!Array.isArray(db)) db = [];
-            } catch(e) { db = []; }
-            render();
-            startTime();
-            checkTheme();
-        };
+    <div class="files">
+      <button class="file-btn" id="btnDownload">↓ Download JSON</button>
+      <button class="file-btn" id="btnUploadTrigger">↑ Upload JSON</button>
+      <input type="file" id="upFile" accept=".json" style="display:none" />
+    </div>
 
-        function startTime() {
-            setInterval(function() {
-                var d = new Date();
-                var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-                document.getElementById('cDate').innerText = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-                document.getElementById('cTime').innerText = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
-            }, 1000);
-        }
+    <div class="list" id="list"></div>
+  </main>
 
-        function renderGrid() {
-            var grid = document.getElementById('activeGrid');
-            grid.innerHTML = '';
-            var activeCount = 0;
-            var types = Object.keys(icons);
-            types.forEach(function(t) {
-                var count = db.filter(function(x){ return x.type === t && !x.done; }).length;
-                if(count > 0) {
-                    activeCount++;
-                    grid.innerHTML += `
-                    <div class="grid-item">
-                        <span>${icons[t]} ${t}</span>
-                        <span class="grid-count">${count}</span>
-                    </div>`;
-                }
-            });
-            if(activeCount === 0) grid.innerHTML = '<div style="font-size:10px; opacity:0.7;">Tidak ada tugas aktif</div>';
-        }
+  <footer class="footer">
+    <div class="ver" id="verText">v31.0 (Full)</div>
+    <button class="donate" id="donateBtn">Donate</button>
+  </footer>
+</div>
 
-        function render() {
-            renderGrid();
-            var list = document.getElementById('list');
-            list.innerHTML = '';
-            
-            document.getElementById('dTotal').innerText = db.length;
-            document.getElementById('dDone').innerText = db.filter(function(x){ return x.done; }).length;
+<!-- Note Modal -->
+<div id="noteModal"><div class="modal-box">
+  <h3 style="margin:0 0 8px 0">Catatan</h3>
+  <textarea id="noteText" placeholder="Tulis progres..."></textarea>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+    <button class="btn" id="noteSave" style="background:var(--primary);color:white">Simpan</button>
+    <button class="btn" id="noteClose" style="background:#555;color:white">Tutup</button>
+  </div>
+</div></div>
 
-            // FILTER LOGIC
-            var fCat = document.getElementById('selCat').value;
-            var fStat = document.getElementById('selStat').value;
+<!-- Donate Modal (no QR) -->
+<div id="donateBackdrop" class="donate-modal-backdrop" aria-hidden="true">
+  <div class="donate-modal" role="dialog" aria-modal="true" aria-labelledby="donateTitle">
+    <h3 id="donateTitle">Donate — Terima kasih 🙏</h3>
+    <div style="margin-top:8px">
+      <div style="font-size:13px;color:var(--muted)">Salin alamat berikut atau klik tombol Copy:</div>
+      <div id="donateAddr" class="donate-addr" aria-live="polite"></div>
+      <div class="donate-hint">Alamat akan otomatis disalin saat popup dibuka.</div>
+    </div>
+    <div class="donate-actions">
+      <button class="btn-copy" id="donateCopyBtn">Copy</button>
+      <button class="btn-close" id="donateCloseBtn">Tutup</button>
+    </div>
+  </div>
+</div>
 
-            var filtered = db.filter(function(i) {
-                var catMatch = fCat === 'All' || i.type === fCat;
-                var statMatch = fStat === 'All' || (fStat === 'Done' ? i.done : !i.done);
-                return catMatch && statMatch;
-            });
+<!-- Modern confirm modal -->
+<div id="_modal" class="_modal_backdrop" aria-hidden="true">
+  <div class="_modal_card" role="dialog" aria-modal="true" id="_modal_card">
+    <h4 id="_modal_title">Konfirmasi</h4>
+    <div id="_modal_message" style="color:var(--muted)"></div>
+    <div class="_modal_row" style="margin-top:14px;">
+      <button id="_modal_cancel" class="_btn_secondary">Batal</button>
+      <button id="_modal_ok" class="_btn_primary">OK</button>
+    </div>
+  </div>
+</div>
 
-            filtered.sort(function(a,b) { return (b.fav?1:0) - (a.fav?1:0); });
+<div id="_toast" class="_toast info" role="status" aria-live="polite"></div>
 
-            if(filtered.length === 0) {
-                list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Belum ada data</div>';
-                return;
-            }
+<script>
+/* ================= CONFIG & MERGE ================= */
+const STORAGE_MAIN = 'AirdropDB_Main';
+const LEGACY_KEYS = ['AirdropDB_v29','airdrop_v28_final','airdrop_v29','airdrop_v28','airdrop_v28_final_backup'];
+const colors = {
+  'Airdrop':'#06b6d4','Faucet':'#60a5fa','Social Task':'#f97316','Testnet':'#8b5cf6',
+  'Daily Task':'#10b981','Retro':'#f59e0b','Node':'#64748b','IDO':'#ef4444',
+  'Staking':'#84cc16','GameFi':'#7c3aed','NFT':'#db2777'
+};
+const icons = {
+  'Airdrop':'📦','Faucet':'🚰','Social Task':'🗣️','Testnet':'🧪',
+  'Daily Task':'📅','Retro':'🕰️','Node':'🖥️','IDO':'🚀',
+  'Staking':'🔒','GameFi':'🎮','NFT':'🖼️'
+};
+const CATEGORY_LIST = Object.keys(colors);
+let DB = [];
 
-            filtered.forEach(function(item) {
-                var color = getBadgeColor(item.type);
-                var isFav = item.fav ? 'active' : '';
-                var isCheck = item.done ? 'checked' : '';
-                var txtStyle = item.done ? 'text-decoration:line-through; opacity:0.5' : '';
-                
-                // TANGGAL LENGKAP DI LIST
-                var d = new Date(item.id);
-                var dateStr = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+/* safe localStorage helpers */
+function safeGet(key){
+  try{ const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; } catch(e){ console.warn('parse err', key); return null; }
+}
+function safeSet(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); } catch(e){ console.error('save err', e); }
+}
 
-                var linkBtn = '';
-                if(item.link && item.link.trim() !== "") {
-                    linkBtn = `<a href="${item.link}" target="_blank" class="btn-act btn-link">🔗 Buka</a>`;
-                }
+/* merge legacy -> main */
+function loadAndMerge(){
+  const mainRaw = safeGet(STORAGE_MAIN);
+  const mainArr = Array.isArray(mainRaw) ? mainRaw : [];
+  const merges = [];
+  LEGACY_KEYS.forEach(k=>{
+    const v = safeGet(k);
+    if(Array.isArray(v)) merges.push(...v);
+  });
+  const map = new Map();
+  mainArr.concat(merges).forEach(item=>{
+    if(item && item.id) map.set(String(item.id), item);
+  });
+  DB = Array.from(map.values()).sort((a,b)=>b.id - a.id);
+  safeSet(STORAGE_MAIN, DB);
+}
+loadAndMerge();
 
-                var html = `
-                <div class="item-card" style="border-left-color: ${color};">
-                    <div class="card-top">
-                        <div class="star ${isFav}" onclick="actFav(${item.id})">★</div>
-                        <div class="checkbox ${isCheck}" onclick="actDone(${item.id})"></div>
-                        <div class="card-info">
-                            <div class="item-title" style="${txtStyle}">${item.name}</div>
-                            <span class="badge" style="background:${color}">${item.type}</span>
-                        </div>
-                        <div class="item-date">${dateStr}</div>
-                    </div>
-                    <div class="card-actions">
-                        ${linkBtn}
-                        <button class="btn-act btn-note" onclick="openNote(${item.id})">📝 Note</button>
-                        <button class="btn-act btn-del" onclick="actDel(${item.id})">Hapus</button>
-                    </div>
-                </div>`;
-                list.insertAdjacentHTML('beforeend', html);
-            });
-        }
+/* ================= UI INIT ================= */
+const selType = document.getElementById('inpType');
+const selFilterCat = document.getElementById('filterCat');
 
-        function addItem() {
-            var name = document.getElementById('inpName').value;
-            var link = document.getElementById('inpLink').value; 
-            var type = document.getElementById('inpType').value;
-            if(!name) { alert("Nama wajib!"); return; }
-            
-            db.unshift({ id: Date.now(), name: name, link: link, type: type, done: false, fav: false, note: "" });
-            save(); render();
-            document.getElementById('inpName').value = '';
-            document.getElementById('inpLink').value = '';
-        }
+function initCategories(){
+  CATEGORY_LIST.forEach(c=>{
+    const opt = document.createElement('option'); opt.value=c; opt.textContent=c; selType.appendChild(opt);
+    const f = document.createElement('option'); f.value=c; f.textContent=c; selFilterCat.appendChild(f);
+  });
+}
+initCategories();
 
-        function actDone(id) { var i=db.find(function(x){return x.id==id}); if(i){i.done=!i.done; save(); render();} }
-        function actFav(id) { 
-            var i=db.find(function(x){return x.id==id}); 
-            if(i){ i.fav=!i.fav; db.sort(function(a,b){return (b.fav?1:0)-(a.fav?1:0)}); save(); render(); } 
-        }
-        function actDel(id) { if(confirm("Hapus?")){ db=db.filter(function(x){return x.id!=id}); save(); render(); } }
-        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+/* ================= CLOCK & THEME ================= */
+function startClock(){
+  const timeBox = document.getElementById('timeBox');
+  function upd(){
+    const d = new Date();
+    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const hh = ('0'+d.getHours()).slice(-2), mm = ('0'+d.getMinutes()).slice(-2);
+    timeBox.querySelector('.time').innerText = hh + ':' + mm;
+    timeBox.querySelector('.date').innerText = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+  upd(); setInterval(upd,1000);
+}
+startClock();
 
-        function openNote(id) {
-            noteId = id;
-            var item = db.find(function(x){return x.id==id});
-            if(item) {
-                document.getElementById('noteText').value = item.note || "";
-                document.getElementById('noteModal').style.display = 'flex';
-            }
-        }
-        function saveNote() {
-            if(noteId) {
-                var item = db.find(function(x){return x.id==noteId});
-                if(item) {
-                    item.note = document.getElementById('noteText').value;
-                    save(); closeNote();
-                }
-            }
-        }
-        function closeNote() { document.getElementById('noteModal').style.display = 'none'; noteId=null; }
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(){ if(localStorage.getItem('theme_final') === 'light') document.body.classList.add('light'); else document.body.classList.remove('light'); }
+applyTheme();
+themeBtn.onclick = ()=>{
+  if(document.body.classList.contains('light')){ document.body.classList.remove('light'); localStorage.setItem('theme_final','dark'); themeBtn.innerText='☀'; }
+  else{ document.body.classList.add('light'); localStorage.setItem('theme_final','light'); themeBtn.innerText='🌙'; }
+};
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            var isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').innerText = isDark ? '☀' : '🌙';
-        }
-        function checkTheme() {
-            if(localStorage.getItem('theme') === 'light') {
-                document.body.classList.remove('dark-mode');
-                document.getElementById('themeIcon').innerText = '🌙';
-            }
-        }
-        function getBadgeColor(t) {
-        
+/* ================= RENDER ================= */
+function render(){
+  document.getElementById('total').innerText = DB.length;
+  document.getElementById('done').innerText = DB.filter(i=>i.done).length;
+
+  const gridBox = document.getElementById('gridBox');
+  gridBox.innerHTML = '';
+  let activeAny = false;
+  CATEGORY_LIST.forEach(type=>{
+    const count = DB.filter(i=>i.type===type && !i.done).length;
+    if(count>0){
+      activeAny = true;
+      const node = document.createElement('div');
+      node.className = 'grid-item';
+      node.innerHTML = `<span class="cat-icon">${icons[type]||''}</span><span style="font-weight:600">${type}</span><span style="width:8px"></span><span class="grid-count">${count}</span>`;
+      gridBox.appendChild(node);
+    }
+  });
+  if(!activeAny) gridBox.innerHTML = '<div style="opacity:.85">Belum ada tugas aktif</div>';
+
+  const list = document.getElementById('list'); list.innerHTML = '';
+  const fCat = document.getElementById('filterCat').value;
+  const fStat = document.getElementById('filterStat').value;
+  let filtered = DB.filter(i=>{
+    const byCat = fCat === 'All' || i.type === fCat;
+    const byStat = fStat === 'All' || (fStat === 'Done' ? i.done : !i.done);
+    return byCat && byStat;
+  });
+  if(filtered.length === 0){ list.innerHTML = `<div style="text-align:center;color:var(--muted);padding:18px">Belum ada data</div>`; return; }
+  filtered.sort((a,b)=> (b.fav?1:0)-(a.fav?1:0) || b.id - a.id);
+  filtered.forEach(it=>{
+    const d = new Date(it.id); const dateStr = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+    const card = document.createElement('div'); card.className = 'card'; card.style.borderLeftColor = colors[it.type] || 'var(--primary)';
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="star ${it.fav?'active':''}" data-id="${it.id}">${icons[it.type] ? '★' : '★'}</div>
+        <div class="check ${it.done?'done':''}" data-id="${it.id}">${it.done ? '✔' : ''}</div>
+        <div class="card-info">
+          <div class="title" title="${escapeHtml(it.name)}" style="${it.done?'opacity:.6;text-decoration:line-through':''}">${escapeHtml(it.name)}</div>
+          <div class="type-badge" style="background:${colors[it.type]||'#333'}"><span class="cat-icon">${icons[it.type]||''}</span><span>${it.type}</span></div>
+        </div>
+        <div class="date">${dateStr}</div>
+      </div>
+      <div class="card-actions">
+        ${it.link? `<button class="btn btn-link" data-link="${escapeAttr(it.link)}">🔗 Buka</button>` : ''}
+        <button class="btn btn-note" data-id="${it.id}">📝 Catatan</button>
+        <button class="btn btn-del" data-id="${it.id}">Hapus</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  attachListHandlers();
+}
+
+/* escape helpers */
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ if(!s) return ''; return String(s).replace(/"/g,'&quot;'); }
+
+/* attach event handlers */
+function attachListHandlers(){
+  document.querySelectorAll('.card .star').forEach(el=> el.onclick = ()=> toggleFav(Number(el.getAttribute('data-id'))));
+  document.querySelectorAll('.card .check').forEach(el=> el.onclick = ()=> toggleDone(Number(el.getAttribute('data-id'))));
+  document.querySelectorAll('.card .btn-del').forEach(el=> el.onclick = ()=> confirmDelete(Number(el.getAttribute('data-id'))));
+  document.querySelectorAll('.card .btn-note').forEach(el=> el.onclick = ()=> openNote(Number(el.getAttribute('data-id'))));
+  document.querySelectorAll('.card .btn-link').forEach(el=> el.onclick = (e)=> { const link = e.currentTarget.getAttribute('data-link'); window.open(/^https?:\/\//i.test(link) ? link : 'https://' + link, '_blank', 'noopener'); });
+}
+
+/* ================= CRUD ================= */
+function addItemRaw(name, link, type){
+  DB.unshift({ id: Date.now(), name, link, type, done:false, fav:false, note:'' });
+  safeSet(STORAGE_MAIN, DB);
+  render();
+}
+
+function addItem(){
+  const name = document.getElementById('inpName').value.trim();
+  const link = document.getElementById('inpLink').value.trim();
+  const type = document.getElementById('inpType').value;
+  if(!name){ showToast('Nama task wajib', 'error'); document.getElementById('inpName').focus(); return; }
+  addItemRaw(name, link, type);
+  document.getElementById('inpName').value=''; document.getElementById('inpLink').value='';
+  showToast('Item berhasil ditambahkan', 'success');
+}
+
+function toggleFav(id){ const it = DB.find(x=>x.id==id); if(!it) return; it.fav=!it.fav; safeSet(STORAGE_MAIN, DB); render(); }
+function toggleDone(id){ const it = DB.find(x=>x.id==id); if(!it) return; it.done=!it.done; safeSet(STORAGE_MAIN, DB); render(); }
+
+async function confirmDelete(id){
+  const ok = await showConfirm('Hapus item', 'Yakin ingin menghapus item ini?', 'Hapus', 'Batal');
+  if(ok){ DB = DB.filter(x=>x.id!=id); safeSet(STORAGE_MAIN, DB); render(); showToast('Item dihapus', 'success'); }
+}
+
+/* ================= NOTES ================= */
+let noteEditId = null;
+function openNote(id){
+  noteEditId = id; const it = DB.find(x=>x.id==id); document.getElementById('noteText').value = it ? (it.note||'') : ''; document.getElementById('noteModal').style.display='flex';
+}
+document.getElementById('noteClose').onclick = ()=> { document.getElementById('noteModal').style.display='none'; noteEditId=null; };
+document.getElementById('noteSave').onclick = ()=> { if(noteEditId!==null){ const it = DB.find(x=>x.id==noteEditId); if(it){ it.note = document.getElementById('noteText').value; safeSet(STORAGE_MAIN, DB)
