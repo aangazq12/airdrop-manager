@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Airdrop Manager - V32 Stable</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="left">
+            <div class="logo">📦</div>
+            <div>
+                <div class="title">Airdrop Manager</div>
+                <div class="subtitle">V32 Stable Split</div>
+            </div>
+        </div>
+
+        <div class="right">
+            <div id="clockTime" class="time">00:00</div>
+            <div id="clockDate" class="date">--</div>
+            <button id="themeBtn" class="theme">☀</button>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <!-- Progress -->
+        <section class="progress">
+            <h3>Progress</h3>
+            <div id="grid" class="grid"></div>
+        </section>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div id="total" class="num">0</div>
+                <div class="lbl">Total</div>
+            </div>
+            <div class="stat">
+                <div id="done" class="num" style="color:#22c55e">0</div>
+                <div class="lbl">Selesai</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row">
+            <select id="filterCat"><option value="All">Kategori: Semua</option></select>
+            <select id="filterStat">
+                <option value="All">Semua</option>
+                <option value="Done">Selesai</option>
+                <option value="Not">Belum</option>
+            </select>
+        </div>
+
+        <!-- Input -->
+        <input id="nameInp" placeholder="Nama task (wajib)" />
+        <input id="linkInp" placeholder="Link (opsional)" />
+
+        <div class="row">
+            <select id="typeInp"></select>
+            <button id="addBtn" class="add-btn">+ Add</button>
+        </div>
+
+        <!-- Files -->
+        <div class="row">
+            <button id="downloadBtn" class="file-btn">↓ Download</button>
+            <button id="uploadBtn" class="file-btn">↑ Upload</button>
+            <input type="file" id="fileInput" accept=".json" hidden />
+        </div>
+
+        <!-- LIST -->
+        <div id="list" class="list"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span id="ver" class="ver">v32-stable</span>
+        <button id="donateBtn" class="donate">Donate</button>
+    </footer>
+</div>
+
+
+<!-- Donate Modal -->
+<div id="donateModal" class="modal-backdrop">
+    <div class="modal">
+        <h3>Donate</h3>
+        <p class="muted">Alamat akan disalin otomatis.</p>
+        <div id="donateAddr" class="addr"></div>
+        <div class="actions">
+            <button id="copyDonate" class="btn-blue">Copy</button>
+            <button id="closeDonate" class="btn-dark">Tutup</button>
+        </div>
+    </div>
+</div>
+
+<!-- Note Modal -->
+<div id="noteModal" class="modal-backdrop">
+    <div class="modal">
+        <h3>Catatan</h3>
+        <textarea id="noteText"></textarea>
+        <div class="actions">
+            <button id="saveNote" class="btn-blue">Simpan</button>
+            <button id="closeNote" class="btn-dark">Tutup</button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal-backdrop">
+    <div class="modal">
+        <h3 id="confirmTitle">Konfirmasi</h3>
+        <p id="confirmMsg" class="muted"></p>
+        <div class="actions">
+            <button id="confirmNo" class="btn-dark">Batal</button>
+            <button id="confirmYes" class="btn-red">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- JS -->
+<script src="app.js"></script>
+
+</body>
+</html>
