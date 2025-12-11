@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Airdrop Manager V28.2 (Final Stable Inject)</title>
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #3b82f6;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-item: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --grad-blue: linear-gradient(135deg, #1e40af, #3b82f6);
+        }
+
+        .dark-mode {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-item: #000000;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --grad-blue: linear-gradient(135deg, #172554, #2563eb);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex; justify-content: center;
+            overflow-y: auto;
+        }
+
+        .app-container {
+            width: 100%; max-width: 450px;
+            background-color: var(--bg-card);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky; top: 0; z-index: 50;
+            background: var(--bg-card);
+            padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .head-left { display: flex; align-items: center; gap: 10px; }
+        .logo { width: 32px; height: 32px; background: var(--grad-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .head-right { display: flex; align-items: center; gap: 10px; text-align: right; }
+        .clock-box { line-height: 1.1; }
+        .clock-date { font-size: 9px; color: var(--text-muted); }
+        .clock-time { font-size: 14px; font-weight: bold; color: var(--text-main); }
+        .theme-btn { background: none; border: 1px solid var(--border); width: 30px; height: 30px; border-radius: 50%; color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* CONTENT */
+        .content-area { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        /* GRID DASHBOARD */
+        .grid-panel {
+            background: var(--grad-blue);
+            padding: 15px; border-radius: 16px; color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            min-height: 80px;
+        }
+        .grid-title { font-size: 10px; opacity: 0.8; margin-bottom: 8px; }
+        .grid-container { display: flex; flex-wrap: wrap; gap: 8px; }
+        .grid-item {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 10px; border-radius: 8px;
+            display: flex; align-items: center; gap: 5px;
+            font-size: 10px; font-weight: bold;
+        }
+        .grid-count { background: white; color: #1e40af; padding: 1px 5px; border-radius: 4px; font-size: 9px; }
+
+        /* STATS */
+        .stats-row { display: flex; gap: 10px; }
+        .stat-box { flex: 1; background: var(--bg-body); padding: 10px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
+        .stat-num { font-size: 18px; font-weight: bold; }
+        .stat-lbl { font-size: 10px; color: var(--text-muted); }
+
+        /* INPUTS & FILTER */
+        select, input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-body); color: var(--text-main); outline: none; font-size: 13px; }
+        .row { display: flex; gap: 8px; }
+        .btn-add { background: #3b82f6; color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: bold; flex-shrink: 0; }
+
+        /* LIST ITEM */
+        .list-wrap { display: flex; flex-direction: column; gap: 12px; padding-bottom: 20px; }
+        .item-card {
+            background: var(--bg-item); border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px;
+            display: flex; flex-direction: column; gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .card-top { display: flex; align-items: center; gap: 10px; }
+        .card-info { flex: 1; overflow: hidden; }
+        .item-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-date { font-size: 9px; color: var(--text-muted); position: absolute; top: 12px; right: 12px; }
+        
+        .badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; margin-top: 2px; }
+        
+        .card-actions { 
+            display: flex; justify-content: flex-end; gap: 8px; 
+            border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 2px;
+        }
+        .btn-act { padding: 5px 12px; border-radius: 6px; border: none; font-size: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; }
+        .btn-note { background: #475569; color: #e2e8f0; }
+        .btn-del { background: #ef4444; color: white; }
+        .btn-link { background: #0ea5e9; color: white; }
+
+        .star { font-size: 18px; color: var(--text-muted); cursor: pointer; }
+        .star.active { color: #fbbf24; }
+        .checkbox { width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .checkbox.checked { background: #3b82f6; border-color: #3b82f6; }
+        .checkbox.checked::after { content: '✔'; color: white; font-size: 10px; }
+
+        /* FOOTER */
+        .footer { padding: 15px; background: var(--bg-card); border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--text-muted); }
+        .btn-donate { background: #3b82f6; color: white; border: none; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-left: 10px; }
+
+        /* MODAL NOTE */
+        #noteModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-box { background: var(--bg-card); width: 100%; max-width: 350px; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); }
+        textarea { width: 100%; height: 120px; background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); padding: 10px; border-radius: 8px; resize: none; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
+
+        /* FILE CONTROLS */
+        .file-controls { display: flex; gap: 10px; margin-top: 8px; }
+        .btn-file { flex: 1; padding: 10px; border-radius: 10px; background: var(--bg-body); border: 1px dashed var(--border); color: var(--text-muted); font-size: 11px; cursor: pointer; text-align: center; }
+
+        svg { width: 20px; height: 20px; fill: currentColor; }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div class="app-container">
+        <div class="header">
+            <div class="head-left">
+                <div class="logo">📦</div>
+                <div>
+                    <h3 style="font-size:14px; font-weight:bold; margin:0;">Dashboard</h3>
+                    <p style="font-size:10px; color:var(--text-muted); margin:0;">Airdrop Manager</p>
+                </div>
+            </div>
+            <div class="head-right">
+                <div class="clock-box">
+                    <div class="clock-date" id="cDate">...</div>
+                    <div class="clock-time" id="cTime">00:00</div>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()" id="themeIcon">☀</button>
+            </div>
+        </div>
+
+        <div class="content-area">
+            
+            <div class="grid-panel">
+                <div class="grid-title">Progress Pengerjaan:</div>
+                <div class="grid-container" id="activeGrid">
+                    <div style="font-size:10px; opacity:0.7;">Belum ada tugas aktif</div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-lbl">Total</div>
+                    <div class="stat-num" id="dTotal">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-lbl">Selesai</div>
+                    <div class="stat-num" id="dDone" style="color:#22c55e;">0</div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <select id="selCat" onchange="render()">
+                    <option value="All">Kategori: Semua</option>
+                    <option value="Airdrop">Airdrop</option>
+                    <option value="Faucet">Faucet</option>
+                    <option value="Social Task">Social</option>
+                    <option value="Testnet">Testnet</option>
+                    <option value="Daily Task">Daily</option>
+                    <option value="Retro">Retro</option>
+                    <option value="Node">Node</option>
+                    <option value="IDO">IDO</option>
+                    <option value="Staking">Staking</option>
+                    <option value="GameFi">GameFi</option>
+                    <option value="NFT">NFT</option>
+                </select>
+                <select id="selStat" onchange="render()">
+                    <option value="All">Status: Semua</option>
+                    <option value="Done">Selesai</option>
+                    <option value="NotDone">Belum</option>
+                </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <input type="text" id="inpName" placeholder="Nama Task (Wajib)...">
+                <input type="text" id="inpLink" placeholder="Link Airdrop (Opsional)...">
+                
+                <div class="row">
+                    <select id="inpType">
+                        <option value="Airdrop">Airdrop</option>
+                        <option value="Faucet">Faucet</option>
+                        <option value="Social Task">Social</option>
+                        <option value="Testnet">Testnet</option>
+                        <option value="Daily Task">Daily</option>
+                        <option value="Retro">Retro</option>
+                        <option value="Node">Node</option>
+                        <option value="IDO">IDO</option>
+                        <option value="Staking">Staking</option>
+                        <option value="GameFi">GameFi</option>
+                        <option value="NFT">NFT</option>
+                    </select>
+                    <button class="btn-add" onclick="addItem()">+ Add</button>
+                </div>
+            </div>
+
+            <div class="file-controls">
+                <button class="btn-file" onclick="downloadFile()">⬇ Download JSON</button>
+                <button class="btn-file" onclick="document.getElementById('upFile').click()">⬆ Upload JSON</button>
+                <input type="file" id="upFile" accept=".json" style="display:none;" onchange="uploadFile(this)">
+            </div>
+            
+            <div class="list-wrap" id="list"></div>
+        </div>
+
+        <div class="footer">
+            <span style="font-size:10px;">v28.2 (Final Stable Inject)</span>
+            <button class="btn-donate" onclick="alert('Wallet: 0xB26F9AfBA067999F185951d17798Ac848407dCc')">Donate</button>
+        </div>
+    </div>
+
+    <div id="noteModal">
+        <div class="modal-box">
+            <h3 style="color:var(--text-main); margin:0;">Catatan</h3>
+            <textarea id="noteText" placeholder="Tulis progres..."></textarea>
+            <div class="modal-btns">
+                <button class="btn-act" style="background:transparent; color:var(--text-muted); border:1px solid #555;" onclick="closeNote()">Batal</button>
+                <button class="btn-act" style="background:#3b82f6; color:white;" onclick="saveNote()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var db = [];
+        var STORAGE_KEY = 'airdrop_v28_final'; 
+        var noteId = null;
+
+        var icons = {
+            'Airdrop':'📦', 'Faucet':'🚰', 'Social Task':'🗣', 'Testnet':'🧪', 
+            'Daily Task':'📅', 'Retro':'🕰', 'Node':'🖥', 'IDO':'🚀', 
+            'Staking':'🥩', 'GameFi':'🎮', 'NFT':'🖼'
+        };
+
+        window.onload = function() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if(raw) db = JSON.parse(raw);
+                if(!Array.isArray(db)) db = [];
+            } catch(e) { db = []; }
+            render();
+            startTime();
+            checkTheme();
+        };
+
+        function startTime() {
+            setInterval(function() {
+                var d = new Date();
+                var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+                document.getElementById('cDate').innerText = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+                document.getElementById('cTime').innerText = ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2);
+            }, 1000);
+        }
+
+        function renderGrid() {
+            var grid = document.getElementById('activeGrid');
+            grid.innerHTML = '';
+            var activeCount = 0;
+            var types = Object.keys(icons);
+            types.forEach(function(t) {
+                var count = db.filter(function(x){ return x.type === t && !x.done; }).length;
+                if(count > 0) {
+                    activeCount++;
+                    grid.innerHTML += `
+                    <div class="grid-item">
+                        <span>${icons[t]} ${t}</span>
+                        <span class="grid-count">${count}</span>
+                    </div>`;
+                }
+            });
+            if(activeCount === 0) grid.innerHTML = '<div style="font-size:10px; opacity:0.7;">Tidak ada tugas aktif</div>';
+        }
+
+        function render() {
+            renderGrid();
+            var list = document.getElementById('list');
+            list.innerHTML = '';
+            
+            document.getElementById('dTotal').innerText = db.length;
+            document.getElementById('dDone').innerText = db.filter(function(x){ return x.done; }).length;
+
+            // FILTER LOGIC
+            var fCat = document.getElementById('selCat').value;
+            var fStat = document.getElementById('selStat').value;
+
+            var filtered = db.filter(function(i) {
+                var catMatch = fCat === 'All' || i.type === fCat;
+                var statMatch = fStat === 'All' || (fStat === 'Done' ? i.done : !i.done);
+                return catMatch && statMatch;
+            });
+
+            filtered.sort(function(a,b) { return (b.fav?1:0) - (a.fav?1:0); });
+
+            if(filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:#666;">Belum ada data</div>';
+                return;
+            }
+
+            filtered.forEach(function(item) {
+                var color = getBadgeColor(item.type);
+                var isFav = item.fav ? 'active' : '';
+                var isCheck = item.done ? 'checked' : '';
+                var txtStyle = item.done ? 'text-decoration:line-through; opacity:0.5' : '';
+                
+                // TANGGAL LENGKAP DI LIST
+                var d = new Date(item.id);
+                var dateStr = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+
+                var linkBtn = '';
+                if(item.link && item.link.trim() !== "") {
+                    linkBtn = `<a href="${item.link}" target="_blank" class="btn-act btn-link">🔗 Buka</a>`;
+                }
+
+                var html = `
+                <div class="item-card" style="border-left-color: ${color};">
+                    <div class="card-top">
+                        <div class="star ${isFav}" onclick="actFav(${item.id})">★</div>
+                        <div class="checkbox ${isCheck}" onclick="actDone(${item.id})"></div>
+                        <div class="card-info">
+                            <div class="item-title" style="${txtStyle}">${item.name}</div>
+                            <span class="badge" style="background:${color}">${item.type}</span>
+                        </div>
+                        <div class="item-date">${dateStr}</div>
+                    </div>
+                    <div class="card-actions">
+                        ${linkBtn}
+                        <button class="btn-act btn-note" onclick="openNote(${item.id})">📝 Note</button>
+                        <button class="btn-act btn-del" onclick="actDel(${item.id})">Hapus</button>
+                    </div>
+                </div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function addItem() {
+            var name = document.getElementById('inpName').value;
+            var link = document.getElementById('inpLink').value; 
+            var type = document.getElementById('inpType').value;
+            if(!name) { alert("Nama wajib!"); return; }
+            
+            db.unshift({ id: Date.now(), name: name, link: link, type: type, done: false, fav: false, note: "" });
+            save(); render();
+            document.getElementById('inpName').value = '';
+            document.getElementById('inpLink').value = '';
+        }
+
+        function actDone(id) { var i=db.find(function(x){return x.id==id}); if(i){i.done=!i.done; save(); render();} }
+        function actFav(id) { 
+            var i=db.find(function(x){return x.id==id}); 
+            if(i){ i.fav=!i.fav; db.sort(function(a,b){return (b.fav?1:0)-(a.fav?1:0)}); save(); render(); } 
+        }
+        function actDel(id) { if(confirm("Hapus?")){ db=db.filter(function(x){return x.id!=id}); save(); render(); } }
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+
+        function openNote(id) {
+            noteId = id;
+            var item = db.find(function(x){return x.id==id});
+            if(item) {
+                document.getElementById('noteText').value = item.note || "";
+                document.getElementById('noteModal').style.display = 'flex';
+            }
+        }
+        function saveNote() {
+            if(noteId) {
+                var item = db.find(function(x){return x.id==noteId});
+                if(item) {
+                    item.note = document.getElementById('noteText').value;
+                    save(); closeNote();
+                }
+            }
+        }
+        function closeNote() { document.getElementById('noteModal').style.display = 'none'; noteId=null; }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            var isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').innerText = isDark ? '☀' : '🌙';
+        }
+        function checkTheme() {
+            if(localStorage.getItem('theme') === 'light') {
+                document.body.classList.remove('dark-mode');
+                document.getElementById('themeIcon').innerText = '🌙';
+            }
+        }
+        function getBadgeColor(t) {
+        
