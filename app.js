@@ -30,7 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
         typeInp.innerHTML += `<option>${c}</option>`;
         filterCat.innerHTML += `<option>${c}</option>`;
     });
-
+// >>> FIX FILTER <<<
+// Aktifkan filter kategori & status
+filterCat.onchange = render;
+document.getElementById('filterStat').onchange = render;
     /* SAVE DB */
     function SAVE(){ localStorage.setItem(KEY, JSON.stringify(DB)); }
 
